@@ -1,16 +1,12 @@
 package pl.qamar.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.qamar.domain.Category;
-import pl.qamar.domain.UnitOfMeasure;
-import pl.qamar.repositories.CategoryRepository;
-import pl.qamar.repositories.UnitOfMeasureRepository;
 import pl.qamar.services.RecipeService;
 
-import java.util.Optional;
-
+@Slf4j
 @Controller
 public class IndexController {
 
@@ -22,6 +18,7 @@ public class IndexController {
 
     @RequestMapping({"", "/", "/index"})
     public String getIndexPage(Model model) {
+        log.debug("Getting index page");
         model.addAttribute("recipes", recipeService.getRecipes());
         return "index";
     }
