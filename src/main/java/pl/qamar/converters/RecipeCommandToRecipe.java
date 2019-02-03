@@ -10,6 +10,18 @@ import pl.qamar.domain.Recipe;
 @Component
 public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
 
+    private final IngredientCommandToIngredient ingredientCommandToIngredient;
+    private final CategoryCommandToCategory categoryCommandToCategory;
+    private final NotesCommandToNotes notesCommandToNotes;
+
+    public RecipeCommandToRecipe(IngredientCommandToIngredient ingredientCommandToIngredient,
+                                 CategoryCommandToCategory categoryCommandToCategory,
+                                 NotesCommandToNotes notesCommandToNotes) {
+        this.ingredientCommandToIngredient = ingredientCommandToIngredient;
+        this.categoryCommandToCategory = categoryCommandToCategory;
+        this.notesCommandToNotes = notesCommandToNotes;
+    }
+
     @Synchronized
     @Nullable
     @Override
@@ -26,17 +38,18 @@ public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
         recipe.setSource(source.getSource());
         recipe.setUrl(source.getUrl());
         recipe.setDirections(source.getDirections());
-        IngredientCommandToIngredient ingredientCommandToIngredient = new IngredientCommandToIngredient();
-        source.getIngredients().forEach(ingredient -> {
-            recipe.getIngredients().add(ingredientCommandToIngredient.convert(ingredient));
-        });
         recipe.setDifficulty(source.getDifficulty());
-        NotesCommandToNotes notesCommandToNotes = new NotesCommandToNotes();
         recipe.setNotes(notesCommandToNotes.convert(source.getNotes()));
-        CategoryCommandToCategory categoryCommandToCategory = new CategoryCommandToCategory();
-        source.getCategories().forEach(category -> {
-            recipe.getCategories().add(categoryCommandToCategory.convert(category));
-        });
+        if (source.getIngredients() != null && source.getIngredients().size() > 0) {
+            source.getIngredients().forEach(ingredient -> {
+                recipe.getIngredients().add(ingredientCommandToIngredient.convert(ingredient));
+            });
+        }
+        if (source.getCategories() != null && source.getCategories().size() > 0) {
+            source.getCategories().forEach(category -> {
+                recipe.getCategories().add(categoryCommandToCategory.convert(category));
+            });
+        }
         return recipe;
     }
 }
