@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.qamar.commands.IngredientCommand;
+import pl.qamar.commands.RecipeCommand;
+import pl.qamar.commands.UnitOfMeasureCommand;
 import pl.qamar.services.IngredientService;
 import pl.qamar.services.RecipeService;
 import pl.qamar.services.UnitOfMeasureService;
@@ -42,6 +44,23 @@ public class IngredientController {
         model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(Long.valueOf(recipeId),
                 Long.valueOf(id)));
         return "recipe/ingredient/show";
+    }
+
+    @GetMapping
+    @RequestMapping("recipe/{recipeId}/ingredient/new")
+    public String newRecipe(@PathVariable String recipeId, Model model) {
+
+        RecipeCommand recipeCommand = recipeService.findRecipeCommandById(Long.valueOf(recipeId));
+
+        IngredientCommand ingredientCommand = new IngredientCommand();
+        ingredientCommand.setRecipeId(Long.valueOf(recipeId));
+        model.addAttribute("ingredient", ingredientCommand);
+
+        ingredientCommand.setUnitOfMeasure(new UnitOfMeasureCommand());
+
+        model.addAttribute("uomList", unitOfMeasureService.listAllUoms());
+
+        return "recipe/ingredient/ingredientform";
     }
 
     @GetMapping
