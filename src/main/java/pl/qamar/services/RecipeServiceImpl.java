@@ -7,6 +7,7 @@ import pl.qamar.commands.RecipeCommand;
 import pl.qamar.converters.RecipeCommandToRecipe;
 import pl.qamar.converters.RecipeToRecipeCommand;
 import pl.qamar.domain.Recipe;
+import pl.qamar.exceptions.NotFoundException;
 import pl.qamar.repositories.RecipeRepository;
 
 import java.util.HashSet;
@@ -41,7 +42,7 @@ public class RecipeServiceImpl implements RecipeService {
     public Recipe findById(Long id) {
         Optional<Recipe> recipeOptional = recipeRepository.findById(id);
         if (!recipeOptional.isPresent()) {
-            throw new RuntimeException("Recipe Not Found");
+            throw new NotFoundException("Recipe Not Found");
         }
         return recipeOptional.get();
     }

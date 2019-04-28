@@ -7,6 +7,7 @@ import org.mockito.MockitoAnnotations;
 import pl.qamar.converters.RecipeCommandToRecipe;
 import pl.qamar.converters.RecipeToRecipeCommand;
 import pl.qamar.domain.Recipe;
+import pl.qamar.exceptions.NotFoundException;
 import pl.qamar.repositories.RecipeRepository;
 
 import java.util.HashSet;
@@ -73,5 +74,12 @@ public class RecipeServiceImplTest {
 
         //Then
         verify(recipeRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void testGetRecipeByIdTestNotFound() throws Exception {
+        Optional<Recipe> recipeOptional = Optional.empty();
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+        Recipe recipeReturned = recipeService.findById(1L);
     }
 }
